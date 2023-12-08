@@ -49,3 +49,126 @@ def import_data(global_path):
 
     # returning arrays within two big lists
     return distances, amps
+
+
+'''A function to tidy up the raw gaussian data. Implements measures to normalise and transform data such that
+the only fitting parameter becomes the waist of the beam, W, AND THE POSITION OF THE CENTRE, C '''
+
+def data_trim(distances_, amplitudes_, cutoff):
+
+    '''A function to tidy up the raw gaussian data. Implements measures to normalise and transform data such that
+    the only fitting parameter becomes the waist of the beam, W, AND THE POSITION OF THE CENTRE, C '''
+
+    new_distances = []
+    new_amps = [] # some empty lists to append to at the end of the loop
+
+    for j in range(len(distances_)): # iterate through distances (amps)
+
+        # Get rid of vertical offset - to reduce a fitting parameter
+        subt_amp = amplitudes_[j] - np.min(amplitudes_[j])
+
+        # Normalise data by its maximum value
+        norm_amp = subt_amp / np.max(subt_amp)
+
+        dist_max = 0 # to add to later
+
+        ''' NB: Do not translate data to zero peak as this was causing issues with fitting'''
+
+        # # Move data so centred on zero - reduce fitting params further
+        # for i in range(norm_amp.size):
+        #     if norm_amp[i] == np.max(norm_amp):
+        #         dist_max = distances_[j][i]
+
+        # shifted_distances = distances_[j] - dist_max
+
+        shifted_distances = distances_[j]
+
+        cut_dist = 0
+        cut_amps = 0
+
+        if len(shifted_distances) > cutoff:
+            cut_dist = shifted_distances[0:cutoff]
+            cut_amps = norm_amp[0:cutoff]
+
+            # Add adjusted data set to the new large lists
+            new_distances.append(cut_dist)
+            new_amps.append(cut_amps)
+
+        else:
+            new_distances.append(shifted_distances)
+            new_amps.append(norm_amp)
+
+    return new_distances, new_amps
+
+### FITTING FUNCTIONS
+
+def chi_squared(model_params, model, x_data, y_data, y_error):
+    return np.sum(((y_data - model(x_data, *model_params))/y_error)**2)
+
+def fit_labs(xdata,ydata, yerrors, function, initial_guess):
+
+    dof = np.size(xdata) - np.size(initial_guess) ## degrees of freedom
+
+    if np.size(yerrors) == 1:
+
+        yerr_extended = np.zeros(np.size(xdata))
+        for i in range(np.size(yerr_extended)):
+            yerr_extended[i] = yerrors
+
+        parameters, covariance = curve_fit(function, xdata, ydata, sigma = yerr_extended, absolute_sigma = True, p0 = initial_guess, maxfev = 50000)
+
+    else:
+    
+        parameters, covariance = curve_fit(function, xdata, ydata, sigma = yerrors, absolute_sigma = True, p0 = initial_guess, maxfev = 50000)
+
+    perrors = np.sqrt(np.diag(covariance))
+
+    chisq_min = chi_squared(parameters,
+                        function, 
+                        xdata, 
+                        ydata, 
+                        yerrors) 
+    
+    chisq_reduced = chisq_min / dof
+
+    # p_value = scipy.stats.chi2.sf(chisq_min, dof)
+
+    yfit = function(xdata, *parameters)
+
+    return yfit, parameters, perrors, chisq_reduced
+
+''' Gaussian with two parameters'''
+
+def Gauss(x, W, C): ### Defien Gaussian with TWO parameters
+    y = np.exp((-2*((x-C)**2) / W**2))
+    return y
+
+''' Define w vs z theoretical relation -
+we use THREE fitting parameters,
+w0,z0 and Rayleigh Range (RR)'''
+'''... Theory for Gaussian beam says that w0 and RR are related but fit doesnt work with only 2 parameters ...'''
+
+def WvsZ(x, min_w,C,RR):
+    # define rayleigh range
+    #RR = (np.pi * min_w**2) / wavelength
+    return min_w * np.sqrt(1 + ((x-C)/RR)**2)
+
+### RAY OPTICS MODEL FUNCTIONS
+
+''' Getting wavenumber, k, from wavelength, wl, input in microns, OUTPUT in per metre'''
+
+def find_k(wl): # in microns
+    return 2*np.pi / (wl*10**(-6)) # wavenumber, SI units
+
+''' Getting V number from numerical aperture, wavenumber and core radius'''
+
+def V_number(num_ap, waveno, radius):
+    return num_ap*waveno*radius
+
+''' Defining the Marcuse Relation below, to compute theoretical minimum waist from V number and core radius '''
+
+# INPUT: SI units
+# OUTPUT: microns
+
+def marcuse(V,radius):
+    return radius*( 0.65 + 1.619*V**(-3/2) + 2.879*V**(-6) )*10**6
