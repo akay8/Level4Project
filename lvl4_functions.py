@@ -172,3 +172,9 @@ def V_number(num_ap, waveno, radius):
 
 def marcuse(V,radius):
     return radius*( 0.65 + 1.619*V**(-3/2) + 2.879*V**(-6) )*10**6
+
+''' A function to check that the independant rayleigh range and min waist are / are not producing the wavelength expected
+This relation only holds for a perfectly gaussian beam ...'''
+
+def wavelength_check(waist,RR): # input - microns
+    return ((np.pi*(waist)**2) / RR) * 10**(-3) # returns in nanometers!
