@@ -177,7 +177,7 @@ def marcuse(V,radius):
 This relation only holds for a perfectly gaussian beam ...'''
 
 def wavelength_check(waist,RR): # input - microns
-    return ((np.pi*(waist)**2) / RR) * 10**(3) # returns in nanometers!
+    return ((np.pi*(waist)**2) / RR) * 10**(3) #s returns in nanometers!
 
 ''' Residual and histogram functions '''
 
