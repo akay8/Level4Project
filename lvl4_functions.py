@@ -178,3 +178,36 @@ This relation only holds for a perfectly gaussian beam ...'''
 
 def wavelength_check(waist,RR): # input - microns
     return ((np.pi*(waist)**2) / RR) * 10**(3) # returns in nanometers!
+
+''' Residual and histogram functions '''
+
+def norm_residuals(x,y,yerr,model, params):
+
+    diff = y - model(x, *params)
+
+    return diff / yerr
+
+def functional_approach(x,func,alphax):
+
+    return np.abs(func(x + alphax) - func(x))
+
+def functional_approach_many(variables, func, uncertainties):
+
+    sum_ = []
+
+    for i in range(np.size(variables)):
+
+        sum_.append( np.abs( func(variables[i] + uncertainties[i]) - func(variables[i]) ) ** 2)
+
+    return np.sqrt(np.sum(sum_))
+
+def histogram_plot(residuals):
+
+    sorted_res = sorted(residuals)
+
+    mean = np.mean(sorted_res)
+    st_dev = np.std(sorted_res)
+
+    normal_dist = scipy.stats.norm.pdf(sorted_res, mean, st_dev)
+
+    return mean, st_dev, sorted_res, normal_dist
