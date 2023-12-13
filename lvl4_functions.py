@@ -173,6 +173,11 @@ def V_number(num_ap, waveno, radius):
 def marcuse(V,radius):
     return radius*( 0.65 + 1.619*V**(-3/2) + 2.879*V**(-6) )*10**6
 
+''' Calculating the NA of the tapered fibre '''
+
+def NA_taper(clad_d, new_d, NA_):
+    return (new_d/clad_d) * NA_
+
 ''' A function to check that the independant rayleigh range and min waist are / are not producing the wavelength expected
 This relation only holds for a perfectly gaussian beam ...'''
 
