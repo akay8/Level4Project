@@ -178,6 +178,9 @@ def marcuse(V,radius):
 def NA_taper(clad_d, new_d, NA_):
     return (new_d/clad_d) * NA_
 
+def new_a(a_, NA_, NA_taper):
+    return (NA_taper/NA_) * a_
+
 ''' A function to check that the independant rayleigh range and min waist are / are not producing the wavelength expected
 This relation only holds for a perfectly gaussian beam ...'''
 
