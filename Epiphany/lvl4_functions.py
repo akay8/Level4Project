@@ -28,7 +28,7 @@ def import_data(global_path):
     
     sorted(files_list, key=sort_int) # sort files
 
-    files_list = files_list[:-1] # -1 to not include 'zs' csv file - import this later
+    #files_list = files_list[:-1] # -1 to not include 'zs' csv file - import this later
 
     # empty lists to put values in
     distances = []
