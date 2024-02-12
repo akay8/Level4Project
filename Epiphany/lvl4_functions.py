@@ -155,7 +155,7 @@ def WvsZ(x, min_w,C,RR):
 
 def WvsZ_2(x, min_w,C):
     # define rayleigh range
-    RR = (np.pi * min_w**2) / lambda_
+    RR = (np.pi * min_w**2) / (wavelength**10*(-6))
     return min_w * np.sqrt(1 + ((x-C)/RR)**2)
 
 ### RAY OPTICS MODEL FUNCTIONS
