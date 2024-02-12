@@ -153,6 +153,11 @@ def WvsZ(x, min_w,C,RR):
     #RR = (np.pi * min_w**2) / wavelength
     return min_w * np.sqrt(1 + ((x-C)/RR)**2)
 
+def WvsZ_2(x, min_w,C):
+    # define rayleigh range
+    RR = (np.pi * min_w**2) / wavelength
+    return min_w * np.sqrt(1 + ((x-C)/RR)**2)
+
 ### RAY OPTICS MODEL FUNCTIONS
 
 ''' Getting wavenumber, k, from wavelength, wl, input in microns, OUTPUT in per metre'''
