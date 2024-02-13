@@ -139,8 +139,8 @@ def fit_labs(xdata,ydata, yerrors, function, initial_guess):
 
 ''' Gaussian with two parameters'''
 
-def Gauss(x, W, C): ### Defien Gaussian with TWO parameters
-    y = (1/W**2)*np.exp((-2*((x-C)**2) / W**2))
+def Gauss(x, W, C,A): ### Defien Gaussian with TWO parameters
+    y = (A/W**2)*np.exp((-2*((x-C)**2) / W**2))
     return y
 
 ''' Define w vs z theoretical relation -
