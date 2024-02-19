@@ -153,8 +153,8 @@ def WvsZ(x, min_w,C,RR):
     #RR = (np.pi * min_w**2) / wavelength
     return min_w * np.sqrt(1 + ((x-C)/RR)**2)
 
-lambda_R = 635e-6 ## MICRONS
-lambda_B = 450e-6
+lambda_R = 635e-3 ## MICRONS
+lambda_B = 450e-3
 
 def WvsZMR(x, min_w,C,M_2):
     # define rayleigh range
