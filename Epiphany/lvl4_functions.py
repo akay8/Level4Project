@@ -115,11 +115,11 @@ def fit_labs(xdata,ydata, yerrors, function, initial_guess):
         for i in range(np.size(yerr_extended)):
             yerr_extended[i] = yerrors
 
-        parameters, covariance = curve_fit(function, xdata, ydata, sigma = yerr_extended, absolute_sigma = True, p0 = initial_guess, maxfev = 50000)
+        parameters, covariance = curve_fit(function, xdata, ydata, sigma = yerr_extended, absolute_sigma = True, p0 = initial_guess, maxfev = 5000000)
 
     else:
     
-        parameters, covariance = curve_fit(function, xdata, ydata, sigma = yerrors, absolute_sigma = True, p0 = initial_guess, maxfev = 50000)
+        parameters, covariance = curve_fit(function, xdata, ydata, sigma = yerrors, absolute_sigma = True, p0 = initial_guess, maxfev = 5000000)
 
     perrors = np.sqrt(np.diag(covariance))
 
@@ -152,6 +152,19 @@ def WvsZ(x, min_w,C,RR):
     # define rayleigh range
     #RR = (np.pi * min_w**2) / wavelength
     return min_w * np.sqrt(1 + ((x-C)/RR)**2)
+
+lambda_R = 635e-6 ## MICRONS
+lambda_B = 450e-6
+
+def WvsZMR(x, min_w,C,M_2):
+    # define rayleigh range
+    #RR = (np.pi * min_w**2) / wavelength
+    return np.sqrt( min_w**2 + (((M_2**4)*lambda_R**2)/ (np.pi * min_w)**2)*(x-C)**2 )
+
+def WvsZMB(x, min_w,C,M_2):
+    # define rayleigh range
+    #RR = (np.pi * min_w**2) / wavelength
+    return np.sqrt( min_w**2 + (((M_2**4)*lambda_B**2)/ (np.pi * min_w)**2)*(x-C)**2 )
 
 # wavelength_ = 635e-9
 
