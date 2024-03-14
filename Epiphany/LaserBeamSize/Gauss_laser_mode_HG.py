@@ -12,6 +12,9 @@ Gauss_laser_mode.py
 
 from LightPipes import *
 import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
+
+
 if LPversion < "2.0.0":
     print(r'You need to upgrade LightPipes to run this script.' + '\n'+r'Type at a terminal prompt: $ pip install --upgrade LightPipes')
     exit(1)
@@ -23,28 +26,38 @@ w0=3*mm
 i=0
 LG=False
 
-n_max=6;m_max=6
-fig, axs = plt.subplots(nrows=m_max, ncols=n_max,figsize=(11.0,7.0))
-if LG:
-    s=r'Laguerre-Gauss laser modes'
-else:
-    s=r'Hermite-Gauss laser modes'
+n_max=3;m_max=4
+fig, axs = plt.subplots(nrows=int(m_max/2), ncols=n_max,figsize=(11.0,7.0))
+# if LG:
+#     s=r'Laguerre-Gauss laser modes'
+# else:
+#     s=r'Hermite-Gauss laser modes'
 
-fig.suptitle(s)
-fig.subplots_adjust(hspace=0.4)
+# Setting TNR Font
+# plt.rcParams.update({'font.size': 22})
+# plt.rcParams.update({'font.family': 'Times New Roman'})
+
+font = {'family' : 'Times New Roman',
+        'size'   : 22}
+plt.rc('font', **font)  # pass in the font dict as kwargs
+
+# for ax in axs:
+#     ax.rcParams.update({'font.size': 22})
+#     ax.rcParams.update({'font.family': 'Times New Roman'})
+
+print(plt.rcParams.keys())
+
+fontdict_ = {'fontsize': 22,
+ 'fontweight': 'normal','fontfamily': 'Times New Roman'}
 
 F=Begin(size,wavelength,N)
-for m in range(int(m_max/2)):
+for m in range(2):
     for n in range(n_max):
         F=GaussBeam(F, w0, LG=LG, n=n, m=m)
         I=Intensity(0,F)
         Phi=Phase(F)
-        if LG:
-            s=f'$LG_{n}$' + f'$_{m}$'
-        else:
-            s=f'$HG_{n}$' + f'$_{m}$'
-        axs[m+i][n].imshow(I,cmap='jet'); axs[m+i][n].axis('off'); axs[m+i][n].set_title(s)
-        axs[m+1+i][n].imshow(Phi,cmap='rainbow'); axs[m+1+i][n].axis('off');
-    i+=1
+        s=f'$TEM_{n}$' + f'$_{m}$'
+        axs[m][n].imshow(I,cmap='jet'); axs[m][n].axis('off'); axs[m][n].set_title(s, **fontdict_)
+        #axs[m+1+i][n].imshow(Phi,cmap='rainbow'); axs[m+1+i][n].axis('off');
 
 plt.show()
