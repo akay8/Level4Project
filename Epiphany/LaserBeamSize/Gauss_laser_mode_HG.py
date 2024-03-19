@@ -13,6 +13,7 @@ Gauss_laser_mode.py
 from LightPipes import *
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
+import numpy as np
 
 
 if LPversion < "2.0.0":
@@ -50,6 +51,8 @@ print(plt.rcParams.keys())
 fontdict_ = {'fontsize': 22,
  'fontweight': 'normal','fontfamily': 'Times New Roman'}
 
+cols = list(np.zeros((2,3)))
+
 F=Begin(size,wavelength,N)
 for m in range(2):
     for n in range(n_max):
@@ -57,7 +60,10 @@ for m in range(2):
         I=Intensity(0,F)
         Phi=Phase(F)
         s=f'$TEM_{n}$' + f'$_{m}$'
-        axs[m][n].imshow(I,cmap='jet'); axs[m][n].axis('off'); axs[m][n].set_title(s, **fontdict_)
+        c = axs[m][n].imshow(I,cmap='jet')
+        axs[m][n].axis('off')
+        axs[m][n].set_title(s, **fontdict_)
+        fig.colorbar(c,ax = axs[m][n])
         #axs[m+1+i][n].imshow(Phi,cmap='rainbow'); axs[m+1+i][n].axis('off');
 
 plt.show()
